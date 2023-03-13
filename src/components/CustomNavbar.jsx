@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink as ReactLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink as ReactLink, useNavigate } from 'react-router-dom';
 import {
     Collapse,
     Navbar,
@@ -12,36 +12,54 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    NavbarText,
   } from 'reactstrap';
+import { doLogOut, getCurrentUser, isLoggedIn } from '../auth';
   
 const CustomNavbar = (args)=>{
     const [isOpen,setIsOpen] = useState(false);
     const toggle = ()=>{
         setIsOpen(!isOpen);
     }
+    const navigate = useNavigate();
+
+    const [login,setLogin] = useState(false);
+    const [user,setUser] = useState(undefined);
+
+    useEffect(()=>{
+      setLogin(isLoggedIn());
+      setUser(getCurrentUser());
+    },[login]);
+
+    const logout = ()=>{
+      doLogOut(()=>{
+        setLogin(false);
+        navigate("/");
+      });
+
+    }
+
     return (
         <div>
         <Navbar 
         color = "dark"
         dark = {true}
         expand = "md"
-        {...args}>
+        {...args}
+        className="px-5"
+        >
           <NavbarBrand tag={ReactLink} to="/">My Blogs</NavbarBrand>
           <NavbarToggler onClick={()=>{toggle()}} />
           <Collapse isOpen = {isOpen} navbar>
+           
             <Nav className="me-auto" navbar>
+              <NavItem>
+                <NavLink tag={ReactLink} to="/">News Feed</NavLink>
+              </NavItem>
               <NavItem>
                 <NavLink tag={ReactLink} to="/about">About</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={ReactLink} to="/login">
-                  Login
-                </NavLink>
-              </NavItem><NavItem>
-                <NavLink tag={ReactLink} to="/signup">
-                  Sign Up
-                </NavLink>
+                <NavLink tag={ReactLink} to="/services">Services</NavLink>
               </NavItem>
               
               <UncontrolledDropdown nav inNavbar>
@@ -49,14 +67,51 @@ const CustomNavbar = (args)=>{
                   More
                 </DropdownToggle>
                 <DropdownMenu>
-                  <DropdownItem tag = {ReactLink} to = "/services">Services</DropdownItem>
                   <DropdownItem>Contact Us</DropdownItem>
-                  <DropdownItem divider />
                   <DropdownItem>YouTube</DropdownItem>
+                  <DropdownItem divider />
+                  <DropdownItem>Instagram</DropdownItem>
+                  <DropdownItem>Facebook</DropdownItem>
+                  <DropdownItem>LinkedIn</DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>
-            <NavbarText>YouTube</NavbarText>
+            <Nav navbar>
+              {
+                login && 
+                <>
+                  <NavItem>
+                    <NavLink tag={ReactLink} to="/user/profileinfo">
+                      Profile Info
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={ReactLink} to="/user/dashboard">
+                      {user.email}
+                    </NavLink>
+                  </NavItem>
+                  <NavItem onClick={logout}>
+                    <NavLink tag={ReactLink}>
+                      Log Out
+                    </NavLink>
+                  </NavItem>
+                </>
+              }
+              {
+                !login && 
+                <>
+                  <NavItem>
+                    <NavLink tag={ReactLink} to="/login">
+                      Login
+                    </NavLink>
+                  </NavItem><NavItem>
+                    <NavLink tag={ReactLink} to="/signup">
+                      Sign Up
+                    </NavLink>
+                  </NavItem>
+                </>
+              }
+            </Nav>
           </Collapse>
         </Navbar>
       </div>

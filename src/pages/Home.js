@@ -1,11 +1,14 @@
 import React from "react";
+import { Container } from "reactstrap";
 import Base from "../components/Base";
+import { NewsFeed } from "../components/NewsFeed";
 const Home = () =>{
     return (
         <React.Fragment>
             <Base>
-                <h1>This is Home page</h1>
-                <p>Welcome to Home page</p>
+                <Container className="mt-3">
+                    <NewsFeed />
+                </Container>
             </Base>
         </React.Fragment>
     );
