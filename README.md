@@ -26,3 +26,27 @@ login url =>
     
     POST
 
+
+## Context API
+
+1. Create Context
+
+context = createContext(null)
+    Provider- provides
+    Consumer- consumes
+
+2. Wrap our components in Provider
+<context.Provider value = {user}>
+    children
+</context.Provider>
+
+3. consume the value with the help of consumer
+<context.Consumer>
+    {
+        (user)=>(
+            <div>
+                {user.name}
+            </div>
+        )
+    }
+</context.Consumer>

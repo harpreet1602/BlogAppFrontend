@@ -10,8 +10,11 @@ import { ToastContainer } from "react-toastify";
 import { UserDashboard } from "./pages/UserRoutes/UserDashboard";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { ProfileInfo } from "./pages/UserRoutes/ProfileInfo";
+import { PostPage } from "./pages/PostPage";
+import UserProvider from "./context/UserProvider";
 function App() {
   return (
+    <UserProvider>
     <BrowserRouter>
     <ToastContainer position="bottom-center"/>
       <Routes>
@@ -20,6 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/posts/:postId" element = {<PostPage />} />
         <Route path="/user" element = {<PrivateRoute />}>
           <Route path="dashboard" element={<UserDashboard />} />
           <Route path="profileinfo" element={<ProfileInfo />} />
@@ -28,6 +32,7 @@ function App() {
 
       </Routes>
     </BrowserRouter>
+    </UserProvider>
   );
 }
 

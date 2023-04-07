@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
-import { doLogIn } from "../auth";
+import { doLogIn, getCurrentUser } from "../auth";
 import Base from "../components/Base";
+import userContext from "../context/userContext";
 import { login } from "../services/userService";
 
 const Login = () =>{
@@ -11,6 +12,7 @@ const Login = () =>{
         username:"",
         password:""
     });
+    
     const navigate = useNavigate();
 
     const handleChange = (event,field) => {
@@ -40,6 +42,7 @@ const Login = () =>{
                 password:""
             });
             // redirect to user dashboard after logging in
+            
             navigate("/user/dashboard");
         }).catch((error)=>{
             console.log("Error log");

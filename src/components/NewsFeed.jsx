@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { toast } from "react-toastify";
 import { Col, Pagination, PaginationItem, PaginationLink, Row } from "reactstrap";
 import { getAllPosts } from "../services/postService";
@@ -13,9 +14,11 @@ export const NewsFeed = ()=>{
         totalElements: "",
         totalPages: ""
     });
+    const [currentPage,setCurrentPage] = useState(0);
+
     useEffect(()=>{
-        changePage(0);
-    },[]);
+        changePage(currentPage);
+    },[currentPage]);
 
     const changePage = (pageNumber,pageSize=5) => {
         // console.log(pageNumber);
@@ -25,12 +28,35 @@ export const NewsFeed = ()=>{
             return;
         }
         getAllPosts(pageNumber,pageSize).then((response)=>{
-            setPostContent(response);
-            window.scroll(0,0);
+            // this is without infinte scroll.
+            // setPostContent(response);
+            // window.scroll(0,0);
+
+// this can also be done for infinite scroll where previous content should not get lost.
+            // setPostContent({
+            //     content: [...postContent.content,...response.content],        
+            //     lastPage: response.lastPage,
+            //     pageNumber: response.pageNumber,
+            //     pageSize: response.pageSize,
+            //     totalElements: response.totalElements,
+            //     totalPages: response.totalPages
+            // })
+
+            // this is another simple way for infinite scroll change Page
+            setPostContent({
+                ...response,
+                content: [...postContent.content,...response.content]        
+            })
+            
         }).catch((error)=>{
             toast.error("Error Occured while fetching!");
         })
     }
+    const changePageInfinite = ()=>{
+        console.log("Page changed");
+        setCurrentPage(currentPage+1);
+    }
+
     return (
         <>
             <div className="container-fluid pb-5">
@@ -40,15 +66,22 @@ export const NewsFeed = ()=>{
                         offset: 1
                     }}>
                         <h1>Blogs Count: {postContent?.totalElements}</h1>
-                        {
-                            postContent.content.map((post)=>{
-                                return <Post key={post.postId} post={post}/>
-                            })
-                        }
                         
+                        <InfiniteScroll
+                            dataLength={postContent.content.length}
+                            next={changePageInfinite}
+                            hasMore={!postContent.lastPage}
+
+                        >
+                            {
+                                postContent.content.map((post)=>{
+                                    return <Post key={post.postId} post={post}/>
+                                })
+                            }
+                        </InfiniteScroll>
                     </Col>
                 </Row>
-                <Row className="mt-3">
+                {/* <Row className="mt-3">
                     <Col md={{
                         size: 10,
                         offset: 1
@@ -76,9 +109,9 @@ export const NewsFeed = ()=>{
                                 Next
                                 </PaginationLink>
                             </PaginationItem>
-                        </Pagination>
-                        </Col>
-                </Row>
+                </Pagination>
+                    </Col>
+                </Row> */}
             </div>
         </>
     );

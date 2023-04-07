@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardTitle, Container, Form, FormGroup, Input, L
 import { loadAllCategories } from "../services/categoryService";
 import JoditEditor from "jodit-react";
 import { toast } from "react-toastify";
-import { createPost as doCreatePost } from "../services/postService";
+import { createPost as doCreatePost, uploadPostImage } from "../services/postService";
 import { getCurrentUser } from "../auth";
 
 const AddPost = ()=>{
@@ -16,6 +16,8 @@ const AddPost = ()=>{
        content:"",
        categoryId:-1 
     });
+    
+    const [image,setImage] = useState(null);
 
     useEffect(()=>{
         loadAllCategories().then((data)=>{
@@ -35,10 +37,16 @@ const AddPost = ()=>{
         setPost({...post,"content":text});
     }
 
+    const handleImage = (event) =>{
+        // console.log(event.target.files[0]);
+        setImage(event.target.files[0]);
+    }
+
     const createPost = (event) => {
         event.preventDefault();
 
         // console.log(post);
+
 // Client side validation before sending the request to backend.
         if(post.title.trim() === ""){
             toast.error("Post title is required!");
@@ -53,10 +61,20 @@ const AddPost = ()=>{
             toast.error("Please select the post category!");
             return;
         }
+        if(!image.type.startsWith("image")){
+            toast.error("Please select Image format only!");
+            return;
+        }
         // Submit the form to create the post after validation.
         post['userId'] = user.id;
         doCreatePost(post).then((response)=>{
-           
+            
+            uploadPostImage(response.postId,image).then(res=>{
+                toast.success("Image Uploaded!")
+            }).catch(err=>{
+                toast.error("Error in uploading Image!");
+                console.log(err);
+            })
             toast.success("Post Created Successfully!");
             setPost({
                 title:"",
@@ -99,6 +117,10 @@ const AddPost = ()=>{
                             value = {post.content}
                             onChange = {contentChange}
                             />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="image">Post Image</Label>
+                            <Input id="image" type="file" onChange={handleImage}/>
                         </FormGroup>
                         <FormGroup>
                             <Label for="categoryId">Post Category</Label>

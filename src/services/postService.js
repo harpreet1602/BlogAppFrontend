@@ -5,5 +5,20 @@ export const createPost = (postData)=>{
 }
 
 export const getAllPosts = (pageNumber,pageSize)=>{
-    return myAxios.get(`/posts?pageNumber=${pageNumber}&pageSize=${pageSize}`).then(response=>{return response.data});
+    return myAxios.get(`/posts?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=addedDate&sortDir=desc`).then(response=>{return response.data});
+}
+
+export const loadPostByPostId = (postId)=>{
+    return myAxios.get(`/posts/${postId}`).then(response=>{return response.data});
+}
+
+export const createComment = (postId,userId,commentData)=>{
+    return privateAxios.post(`/post/${postId}/user/${userId}/comments`,commentData).then(response=>{return response.data});
+}
+
+export const uploadPostImage = (postId,image) => {
+    let formdata = new FormData();
+    formdata.append("image",image);
+
+    return privateAxios.post(`/post/image/upload/${postId}`,formdata).then(response => {return response.data});
 }
