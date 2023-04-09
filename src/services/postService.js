@@ -12,6 +12,10 @@ export const loadPostByPostId = (postId)=>{
     return myAxios.get(`/posts/${postId}`).then(response=>{return response.data});
 }
 
+export const loadPostByCategoryId = (categoryId)=>{
+    return myAxios.get(`/category/${categoryId}/posts`).then(response=>{return response.data});
+}
+
 export const createComment = (postId,userId,commentData)=>{
     return privateAxios.post(`/post/${postId}/user/${userId}/comments`,commentData).then(response=>{return response.data});
 }
