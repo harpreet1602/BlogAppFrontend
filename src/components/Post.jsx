@@ -1,7 +1,14 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, CardBody, CardText } from "reactstrap";
+import { Button, Card, CardBody, CardText } from "reactstrap";
+import { getCurrentUser } from "../auth";
 
-export const Post = ({post={title:"default title",content:"default content"}})=>{
+export const Post = ({post={ postId:-1, title:"default title",content:"default content"},deletePost})=>{
+    const [user,setUser] = useState()
+    useEffect(()=>{
+        setUser(getCurrentUser);
+    },[]);
+
     return (
         <>
             <Card className="border-0 shadow mt-3">
@@ -11,6 +18,8 @@ export const Post = ({post={title:"default title",content:"default content"}})=>
                     </CardText>
                     <div>
                         <Link className="btn btn-secondary" to={"/posts/" + post.postId}>Read More</Link>
+
+                        {user && user.id === post.user?.id && <Button color="danger" className="ms-2" onClick={()=>deletePost(post)}>Delete</Button>}
                     </div>
                 </CardBody>
             </Card>

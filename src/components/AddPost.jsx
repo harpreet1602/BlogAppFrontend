@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { createPost as doCreatePost, uploadPostImage } from "../services/postService";
 import { getCurrentUser } from "../auth";
 
-const AddPost = ()=>{
+const AddPost = ({posts,setPosts})=>{
     const [categories,setCategories] = useState([]);
     const [user,setUser] = useState(undefined);
     const editor = useRef(null);
@@ -14,7 +14,7 @@ const AddPost = ()=>{
     const [post,setPost] = useState({
        title:"",
        content:"",
-       categoryId:-1 
+       categoryId:-1
     });
     
     const [image,setImage] = useState(null);
@@ -61,20 +61,22 @@ const AddPost = ()=>{
             toast.error("Please select the post category!");
             return;
         }
-        if(!image.type.startsWith("image")){
+        if(image && !image.type.startsWith("image")){
             toast.error("Please select Image format only!");
             return;
         }
         // Submit the form to create the post after validation.
         post['userId'] = user.id;
         doCreatePost(post).then((response)=>{
-            
+            if(image){
             uploadPostImage(response.postId,image).then(res=>{
                 toast.success("Image Uploaded!")
             }).catch(err=>{
                 toast.error("Error in uploading Image!");
                 console.log(err);
             })
+            }
+            setPosts([...posts,response])
             toast.success("Post Created Successfully!");
             setPost({
                 title:"",

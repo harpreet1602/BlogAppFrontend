@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { toast } from "react-toastify";
 import { Col, Pagination, PaginationItem, PaginationLink, Row } from "reactstrap";
-import { getAllPosts } from "../services/postService";
+import { deletePostService, getAllPosts } from "../services/postService";
 import { Post } from "./Post";
 
 export const NewsFeed = ()=>{
@@ -19,6 +19,18 @@ export const NewsFeed = ()=>{
     useEffect(()=>{
         changePage(currentPage);
     },[currentPage]);
+
+    function deletePost(post){
+        deletePostService(post.postId).then((data)=>{
+            console.log(data);
+            toast.success("Post deleted successfully");
+            let newPosts = postContent.content.filter(p=>p.postId!==post.postId);
+            setPostContent({...postContent,content:[...newPosts]});
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+    }
 
     const changePage = (pageNumber,pageSize=5) => {
         // console.log(pageNumber);
@@ -64,7 +76,7 @@ export const NewsFeed = ()=>{
                     <Col md={{
                         size: 12,
                     }}>
-                        <h1>Blogs Count: {postContent?.totalElements}</h1>
+                        <h1>Blogs Count: {postContent?.content.length}</h1>
                         
                         <InfiniteScroll
                             dataLength={postContent.content.length}
@@ -74,7 +86,7 @@ export const NewsFeed = ()=>{
                         >
                             {
                                 postContent.content.map((post)=>{
-                                    return <Post key={post.postId} post={post}/>
+                                    return <Post deletePost={deletePost} key={post.postId} post={post}/>
                                 })
                             }
                         </InfiniteScroll>

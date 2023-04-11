@@ -16,6 +16,14 @@ export const loadPostByCategoryId = (categoryId)=>{
     return myAxios.get(`/category/${categoryId}/posts`).then(response=>{return response.data});
 }
 
+export function loadPostsUserWise(userId) {
+    return myAxios.get(`/user/${userId}/posts`).then(response=>{return response.data});
+}
+
+export function deletePostService(postId) {
+    return privateAxios.delete(`/posts/${postId}`).then(response=>{return response.data});
+}
+
 export const createComment = (postId,userId,commentData)=>{
     return privateAxios.post(`/post/${postId}/user/${userId}/comments`,commentData).then(response=>{return response.data});
 }
@@ -26,3 +34,4 @@ export const uploadPostImage = (postId,image) => {
 
     return privateAxios.post(`/post/image/upload/${postId}`,formdata).then(response => {return response.data});
 }
+

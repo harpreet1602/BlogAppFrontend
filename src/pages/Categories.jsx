@@ -8,7 +8,7 @@ import { Col, Container, Row } from "reactstrap";
 import Base from "../components/Base";
 import { CategorySideMenu } from "../components/CategorySideMenu";
 import { Post } from "../components/Post";
-import { loadPostByCategoryId } from "../services/postService";
+import { deletePostService, loadPostByCategoryId } from "../services/postService";
 export const Categories = ()=>{
     const {categoryId} = useParams();
     const [posts,setPosts] = useState([]);
@@ -25,6 +25,19 @@ export const Categories = ()=>{
         // console.log(categoryId);
 
     },[categoryId]);
+
+    function deletePost(post){
+        deletePostService(post.postId).then((data)=>{
+            console.log(data);
+            toast.success("Post deleted successfully");
+            let newPosts = posts.filter(p=>p.postId!==post.postId);
+            setPosts([...newPosts]);
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+    }
+
     return (
         <>
             <Base>
@@ -38,7 +51,7 @@ export const Categories = ()=>{
                         {
                             posts && posts.map((post,index)=>{
                                 return (
-                                    <Post post={post} key={index}/>
+                                    <Post deletePost={deletePost} post={post} key={index}/>
                                 )
                             })
                         }
