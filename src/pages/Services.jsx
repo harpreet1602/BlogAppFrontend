@@ -5,10 +5,10 @@ const Services = () => {
         <>
             <userContext.Consumer>
                 {
-                    (user)=>(
+                    (object)=>(
                         <Base>
                             <h1>This is Services Component.</h1>
-                            <h3>Name is: {user?.name}</h3>
+                            <h3>Name is: {object.user.data.name}</h3>
                         </Base>
                     )
                 }

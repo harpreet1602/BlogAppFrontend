@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavLink as ReactLink, useNavigate } from 'react-router-dom';
 import {
     Collapse,
@@ -14,6 +14,7 @@ import {
     DropdownItem,
   } from 'reactstrap';
 import { doLogOut, getCurrentUser, isLoggedIn } from '../auth';
+import userContext from '../context/userContext';
   
 const CustomNavbar = (args)=>{
     const [isOpen,setIsOpen] = useState(false);
@@ -21,6 +22,7 @@ const CustomNavbar = (args)=>{
         setIsOpen(!isOpen);
     }
     const navigate = useNavigate();
+    const userContextData = useContext(userContext);
 
     const [login,setLogin] = useState(false);
     const [user,setUser] = useState(undefined);
@@ -33,6 +35,10 @@ const CustomNavbar = (args)=>{
     const logout = ()=>{
       doLogOut(()=>{
         setLogin(false);
+        userContextData.setUser({
+          data: {},
+          loggedIn: false
+        })
         navigate("/");
       });
 
@@ -81,7 +87,7 @@ const CustomNavbar = (args)=>{
                 login && 
                 <>
                   <NavItem>
-                    <NavLink tag={ReactLink} to="/user/profileinfo">
+                    <NavLink tag={ReactLink} to={`/user/profileinfo/${user.id}`}>
                       Profile Info
                     </NavLink>
                   </NavItem>

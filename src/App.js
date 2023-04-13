@@ -13,6 +13,8 @@ import { ProfileInfo } from "./pages/UserRoutes/ProfileInfo";
 import { PostPage } from "./pages/PostPage";
 import UserProvider from "./context/UserProvider";
 import { Categories } from "./pages/Categories";
+import { UpdateBlog } from "./pages/UpdateBlog";
+import { UpdateUserProfile } from "./components/UpdateUserProfile";
 function App() {
   return (
     <UserProvider>
@@ -29,7 +31,9 @@ function App() {
 
         <Route path="/user" element = {<PrivateRoute />}>
           <Route path="dashboard" element={<UserDashboard />} />
-          <Route path="profileinfo" element={<ProfileInfo />} />
+          <Route path="profileinfo/:userId" element={<ProfileInfo />} />
+          <Route path="updateprofileinfo/:userId" element={<UpdateUserProfile />} />
+          <Route path="update-blog/:postId" element={<UpdateBlog />} />
         </Route>
         
 

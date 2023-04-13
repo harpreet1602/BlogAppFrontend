@@ -12,7 +12,8 @@ const Login = () =>{
         username:"",
         password:""
     });
-    
+    const userContextData = useContext(userContext);
+
     const navigate = useNavigate();
 
     const handleChange = (event,field) => {
@@ -35,6 +36,10 @@ const Login = () =>{
             console.log(response);
             doLogIn(response,()=>{
                 console.log("Response is saved in localstorage");
+                userContextData.setUser({
+                    data: response.user,
+                    loggedIn: true
+                });
             });
             toast.success("User Logged in Successfully!!");
             setLoginDetails({

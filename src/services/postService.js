@@ -24,6 +24,11 @@ export function deletePostService(postId) {
     return privateAxios.delete(`/posts/${postId}`).then(response=>{return response.data});
 }
 
+export function updatePostService(postId,post){
+    console.log(post);
+    return privateAxios.put(`/posts/${postId}`,post).then(response=>{return response.data});
+}
+
 export const createComment = (postId,userId,commentData)=>{
     return privateAxios.post(`/post/${postId}/user/${userId}/comments`,commentData).then(response=>{return response.data});
 }
